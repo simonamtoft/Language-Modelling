@@ -3,7 +3,7 @@ State-of-the-Art Language Modelling in Python with PyTorch.
 
 Project done at DTU as a part of the course Deep Learning (02456).  
 
-Participants: 
+## Participants 
 
 [Lucas Alexander Sørensen](https://github.com/lucasalexsorensen)
 
@@ -11,5 +11,5 @@ Participants:
 
 [Simon Amtoft Pedersen](https://github.com/simonamtoft)
 
-
-Data Source: [Text8 data](https://deepai.org/dataset/text8?fbclid=IwAR3bHeLuM-Q-qrRhJvD8oEMLliSN4-Odgra7vMRofvRCiaTD2IGVb7LdX48)
+## Data
+The project is using the [text8 data](https://deepai.org/dataset/text8).
