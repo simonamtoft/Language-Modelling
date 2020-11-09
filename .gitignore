@@ -1,0 +1,9 @@
+
+.ipynb_checkpoints/Untitled-checkpoint.ipynb
+.ipynb_checkpoints/test-checkpoint.ipynb
+*.tokens
+*.zip
+*.json
+*.arrow
+merges.txt
+.ipynb_checkpoints/preparing data-checkpoint.ipynb
