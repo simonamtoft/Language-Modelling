@@ -1,0 +1,11 @@
+.vscode
+
+.ipynb_checkpoints
+
+merges.txt
+vocab.json
+*.arrow
+*.raw
+
+huggingface-transformers
+tokenized_*
