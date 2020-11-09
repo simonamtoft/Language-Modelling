@@ -5,5 +5,8 @@
 *.zip
 *.json
 *.arrow
+*.raw
 merges.txt
 .ipynb_checkpoints/preparing data-checkpoint.ipynb
+huggingface-transformers
+tokenized_*
