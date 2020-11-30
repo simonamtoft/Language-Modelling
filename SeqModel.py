@@ -47,5 +47,5 @@ class Seq(nn.Module):
 
 		# [batch * seq len, hidden dim]
 		o = o.reshape(-1, o.shape[2])
-		p = F.softmax(self.fc(o))
+		p = self.fc(o)
 		return p.to(self.device), h.to(self.device), c.to(self.device)
