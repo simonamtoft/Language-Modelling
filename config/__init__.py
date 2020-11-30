@@ -1,19 +1,13 @@
 # Model parameters
-PARAMETERS = {
+PARAM = {
 	'embed_dim' 	: 300,
 	'hidden_dim' 	: 300,
 	'n_layers' 		: 1,
-	'dropout_rate' 	: 0.5
+	'dropout' 		: 0.5
 }
-
-EMBED_DIM = 300
-HIDDEN_DIM = 300
-N_LAYERS = 1
-DROPOUT_RATE = 0.5
 
 # Data parameters
 SEQ_LEN = 256
-BATCH_SIZE = 1
 
 # Tokenizer parameters
 VOCAB_SIZE = 8192

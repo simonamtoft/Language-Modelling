@@ -10,3 +10,5 @@ merges.txt
 .ipynb_checkpoints/preparing data-checkpoint.ipynb
 huggingface-transformers
 tokenized_*
+__pycache__/SeqModel.cpython-38.pyc
+*.pyc
