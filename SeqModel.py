@@ -1,13 +1,13 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import config
 
 dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class Seq(nn.Module):
 	def __init__(self, vocab_size, embed_dim, hidden_dim, n_layers, dropout_rate, device=dev):
 		super(Seq, self).__init__()
+		# self.device = device
 		self.vocab_size = vocab_size
 		self.hidden_dim = hidden_dim
 		self.n_layers = n_layers
@@ -25,6 +25,8 @@ class Seq(nn.Module):
 		self.fc = nn.Linear(hidden_dim, vocab_size)
 
 	def forward(self, x, h, c):
+		bsize, slen = x.shape
+
 		# x: [batch, seq len] # Just seq len?
 
 		e = self.dropout(self.embedding(x))
@@ -32,7 +34,7 @@ class Seq(nn.Module):
 
 		e = nn.utils.rnn.pack_padded_sequence(
 			e, 
-			torch.Tensor(config.BATCH_SIZE).fill_(config.SEQ_LEN), 
+			torch.Tensor(bsize).fill_(slen),
 			batch_first=True
 		)
 		o, (h, c) = self.lstm(e, (h, c))
@@ -41,5 +43,5 @@ class Seq(nn.Module):
 
 		# [batch * seq len, hidden dim]
 		o = o.reshape(-1, o.shape[2])
-		p = self.fc(o)
+		p = F.softmax(self.fc(o))
 		return p, h, c
