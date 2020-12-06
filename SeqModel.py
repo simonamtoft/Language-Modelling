@@ -44,6 +44,4 @@ class Seq(nn.Module):
 		p = self.dropout(self.fc(o))
 		# [batch, seq len, vocab size]
 
-		p = p.transpose(1, 2)
-		# [batch, vocab size, seq len]
 		return p, h, c #p.to(self.device), h.to(self.device), c.to(self.device)
