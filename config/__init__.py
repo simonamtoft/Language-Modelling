@@ -1,16 +1,20 @@
 # Model parameters
 PARAM = {
-	'embed_dim' 	: 300,
-	'hidden_dim' 	: 300,
-	'n_layers' 		: 1,
+	'embed_dim' 	: 384,
+	'hidden_dim' 	: 384,
+	'n_layers' 		: 2,
 	'dropout' 		: 0.5
 }
 
+PRINT_LOSS_EVERY_N_BATCH = 1000
+LOAD_PRETRAINED = False
+
 # Data parameters
 SEQ_LEN = 256
+BATCH_SIZE = 128
 
 # Tokenizer parameters
-VOCAB_SIZE = 8192
+VOCAB_SIZE = 16384 #8192
 PADDING_SIZE = 256
 
 # Define paths

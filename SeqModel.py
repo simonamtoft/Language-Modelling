@@ -2,10 +2,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+# Require as argument instead.
+#dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 class Seq(nn.Module):
-	def __init__(self, vocab_size, param, device=dev):
+	def __init__(self, vocab_size, param, device):
 		super(Seq, self).__init__()
 		self.device = device
 		
@@ -31,21 +32,18 @@ class Seq(nn.Module):
 		self.fc = nn.Linear(self.hidden_dim, self.vocab_size)
 
 	def forward(self, x, h, c):
-		bsize, slen = x.shape
-
-		e = self.dropout(self.embedding(x))
+		e = self.embedding(x)
+		
+		# Why is dropout on embedding?
+		#e = self.dropout(e)
 		# e: [batch, seq len, emb]
 
-		e = nn.utils.rnn.pack_padded_sequence(
-			e, 
-			torch.Tensor(bsize).fill_(slen).to(self.device),
-			batch_first=True
-		)
 		o, (h, c) = self.lstm(e, (h, c))
 		# o: [batch, seq len, hidden dim], (h, c): [n layers, batch, hidden dim]
-		o, _ = nn.utils.rnn.pad_packed_sequence(o, batch_first=True)
 
-		# [batch * seq len, hidden dim]
-		o = o.reshape(-1, o.shape[2])
-		p = self.fc(o)
-		return p.to(self.device), h.to(self.device), c.to(self.device)
+		p = self.dropout(self.fc(o))
+		# [batch, seq len, vocab size]
+
+		p = p.transpose(1, 2)
+		# [batch, vocab size, seq len]
+		return p, h, c #p.to(self.device), h.to(self.device), c.to(self.device)

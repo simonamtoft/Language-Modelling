@@ -1,16 +1,21 @@
 import numpy as np
 import torch
 
-def prep_batches(dataset, batch_size, seq_len):
+def prep_batches(dataset, batch_size, print_every = None):
 	num_batches = len(dataset) // batch_size
-	inputs = dataset[:num_batches * batch_size]
-	targets = torch.zeros_like(inputs)
-	for i in range(0, len(inputs)):
-		targets[i][:-1] = inputs[i][1:] # skip first token
-	inputs = inputs.view((num_batches, -1, seq_len))
-	targets = targets.view((num_batches, -1, seq_len))
-	return inputs, targets
+	inputs =  [None] * num_batches
+	targets = [None] * num_batches
 
+	for batch in range(0, num_batches):
+		inputs[batch] = torch.stack(dataset[batch*batch_size : (batch+1)*batch_size])
+		targets[batch] = torch.zeros_like(inputs[batch])
+
+		for sequence in range(0, batch_size):
+			targets[batch][sequence][:-1] = inputs[batch][sequence][1:].detach().clone()
+			targets[batch][sequence][-1] = inputs[batch][sequence][0].detach().clone()
+		if print_every and batch % print_every == 0:
+			print("Preparing batch {}/{}".format(batch + 1, num_batches))
+	return inputs, targets
 
 def one_hot_encode(idx, vocab_size):
 	one_hot = np.zeros(vocab_size)
