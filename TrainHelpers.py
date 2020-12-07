@@ -1,23 +1,24 @@
 import numpy as np
 import torch
-from torch.utils.data import DataLoader
 
-def prep_batches(dataset, batch_size, print_every = None, num_workers=4):
-	data_iter = iter(DataLoader(dataset, batch_size=batch_size, drop_last=True, num_workers=num_workers))
-	num_batches = len(data_iter) # len(dataset) // batch_size
-	inputs =  [None] * num_batches
-	targets = [None] * num_batches
+def prep_batches(dataset, batch_size, print_every = None):
+    num_batches = len(dataset) // batch_size
+    inputs = [None] * num_batches
+    targets = [None] * num_batches
 
-	for batch in range(0, num_batches):
-		ids = next(data_iter)["ids"]
-		inputs[batch] = ids #torch.stack(dataset[batch*batch_size : (batch+1)*batch_size])
-		targets[batch] = ids.clone()
+    # We wish to have (num_batches, batch_size) of tensors. 
+	# If (i, j) is a sequence, then (i+1, j) should be the next sequence of the dataset.
 
-		for sequence in range(0, batch_size):
-			targets[batch][sequence] = torch.roll(targets[batch][sequence], -1, 0)
-		if print_every and batch % print_every == 0:
-			print("Preparing batch {}/{}".format(batch + 1, num_batches))
-	return inputs, targets
+    for batch in range(0, num_batches):
+        inputs[batch] = dataset[batch:num_batches*batch_size:num_batches]
+        targets[batch] = [None] * batch_size
+        for sequence in range(0, batch_size):
+            targets[batch][sequence] = torch.zeros_like(inputs[batch][sequence])
+            targets[batch][sequence][:-1] = inputs[batch][sequence][1:]
+            targets[batch][sequence][-1] = inputs[batch][sequence][0]
+        if print_every and batch % print_every == 0:
+            print("Preparing batch {}/{}".format(batch + 1, num_batches))
+    return inputs, targets
 
 def one_hot_encode(idx, vocab_size):
 	one_hot = np.zeros(vocab_size)

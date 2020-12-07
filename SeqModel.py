@@ -2,6 +2,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+# https://discuss.pytorch.org/t/how-to-use-pack-sequence-if-we-are-going-to-use-word-embedding-and-bilstm/28184/4
+def simple_elementwise_apply(fn, packed_sequence):
+    """applies a pointwise function fn to each element in packed_sequence"""
+    return torch.nn.utils.rnn.PackedSequence(fn(packed_sequence.data), packed_sequence.batch_sizes)
+
 class Seq(nn.Module):
 	def __init__(self, vocab_size, param, device):
 		super(Seq, self).__init__()
@@ -29,7 +34,7 @@ class Seq(nn.Module):
 		self.fc = nn.Linear(self.hidden_dim, self.vocab_size)
 
 	def forward(self, x, h, c):
-		e = self.embedding(x)
+		e = simple_elementwise_apply(self.embedding, x)
 		
 		# Why is dropout on embedding?
 		#e = self.dropout(e)
@@ -38,6 +43,7 @@ class Seq(nn.Module):
 		o, (h, c) = self.lstm(e, (h, c))
 		# o: [batch, seq len, hidden dim], (h, c): [n layers, batch, hidden dim]
 
+		o, _ = nn.utils.rnn.pad_packed_sequence(o, batch_first=True, padding_value=0)
 		p = self.dropout(self.fc(o))
 		# [batch, seq len, vocab size]
 
