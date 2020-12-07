@@ -2,9 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-# Require as argument instead.
-#dev = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
 class Seq(nn.Module):
 	def __init__(self, vocab_size, param, device):
 		super(Seq, self).__init__()
