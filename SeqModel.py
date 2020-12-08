@@ -33,13 +33,14 @@ class Seq(nn.Module):
 		self.dropout = nn.Dropout(self.dropout_rate)
 		self.fc = nn.Linear(self.hidden_dim, self.vocab_size)
 
-	def forward(self, x, h, c):
-		e = simple_elementwise_apply(self.embedding, x)
+	def forward(self, x, lengths, h, c):
+		e = self.embedding(x)
 		
 		# Why is dropout on embedding?
 		#e = self.dropout(e)
 		# e: [batch, seq len, emb]
 
+		e = nn.utils.rnn.pack_padded_sequence(e, lengths, batch_first=True, enforce_sorted=False)
 		o, (h, c) = self.lstm(e, (h, c))
 		# o: [batch, seq len, hidden dim], (h, c): [n layers, batch, hidden dim]
 
