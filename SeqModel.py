@@ -1,3 +1,4 @@
+import config
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -40,11 +41,21 @@ class Seq(nn.Module):
 		#e = self.dropout(e)
 		# e: [batch, seq len, emb]
 
-		e = nn.utils.rnn.pack_padded_sequence(e, lengths, batch_first=True, enforce_sorted=False)
+		# e = nn.utils.rnn.pack_padded_sequence(
+		# 	e, 
+		# 	lengths, 
+		# 	batch_first=True, 
+		# 	enforce_sorted=False
+		# )
 		o, (h, c) = self.lstm(e, (h, c))
 		# o: [batch, seq len, hidden dim], (h, c): [n layers, batch, hidden dim]
 
-		o, _ = nn.utils.rnn.pad_packed_sequence(o, batch_first=True, padding_value=0)
+		# o, _ = nn.utils.rnn.pad_packed_sequence(
+		# 	o, 
+		# 	batch_first=True, 
+		# 	padding_value=0,
+		# 	total_length=config.SEQ_LEN,
+		# )
 		p = self.dropout(self.fc(o))
 		# [batch, seq len, vocab size]
 
