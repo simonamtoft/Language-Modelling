@@ -35,28 +35,12 @@ class Seq(nn.Module):
 		self.fc = nn.Linear(self.hidden_dim, self.vocab_size)
 
 	def forward(self, x, lengths, h, c):
-		e = self.embedding(x)
-		
-		# Why is dropout on embedding?
-		#e = self.dropout(e)
 		# e: [batch, seq len, emb]
-
-		# e = nn.utils.rnn.pack_padded_sequence(
-		# 	e, 
-		# 	lengths, 
-		# 	batch_first=True, 
-		# 	enforce_sorted=False
-		# )
+		# o: [batch, seq len, hidden dim]
+		# (h, c): [n layers, batch, hidden dim]
+		# p: [batch, seq len, vocab size]
+		
+		e = self.embedding(x)
 		o, (h, c) = self.lstm(e, (h, c))
-		# o: [batch, seq len, hidden dim], (h, c): [n layers, batch, hidden dim]
-
-		# o, _ = nn.utils.rnn.pad_packed_sequence(
-		# 	o, 
-		# 	batch_first=True, 
-		# 	padding_value=0,
-		# 	total_length=config.SEQ_LEN,
-		# )
 		p = self.dropout(self.fc(o))
-		# [batch, seq len, vocab size]
-
-		return p, h, c #p.to(self.device), h.to(self.device), c.to(self.device)
+		return p, h, c

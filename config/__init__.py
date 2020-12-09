@@ -11,7 +11,7 @@ LOAD_PRETRAINED = False
 
 # Data parameters
 SEQ_LEN = 256
-BATCH_SIZE = 32 # 
+BATCH_SIZE = 32
 
 # Tokenizer parameters
 VOCAB_SIZE = 8192
