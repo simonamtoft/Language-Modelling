@@ -13,3 +13,4 @@ tokenized_*
 __pycache__/SeqModel.cpython-38.pyc
 *.pyc
 batches.pkl
+saved_model
