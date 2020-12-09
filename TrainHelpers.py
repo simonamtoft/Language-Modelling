@@ -1,23 +1,23 @@
 import numpy as np
 import torch
 
-def prep_batches(dataset, batch_size, print_every = None):
-    num_batches = len(dataset) // batch_size
-    inputs = [None] * num_batches
-    targets = [None] * num_batches
+def prep_batches(dataset, batch_size, sequence_length, print_every = None):
+    num_batches = (len(dataset)-1) // sequence_length // batch_size
+    inputs = dataset[:num_batches*batch_size*sequence_length].view(-1, sequence_length)
+    targets = dataset[1:num_batches*batch_size*sequence_length + 1].view(-1, sequence_length)
 
-    # We wish to have (num_batches, batch_size) of tensors. 
-	# If (i, j) is a sequence, then (i+1, j) should be the next sequence of the dataset.
+    # We now have (batches, batchsize, sequence_length) for both inputs and targets
+    # However, we wish to have (i, j) to have the next sequence be (i+1, j) such that states between
+    # batches can be used.
 
+    temp_tuple = ([None] * num_batches, [None] * num_batches)
     for batch in range(0, num_batches):
-        inputs[batch] = dataset[batch:num_batches*batch_size:num_batches]
-        targets[batch] = [None] * batch_size
-        for sequence in range(0, batch_size):
-            targets[batch][sequence] = torch.zeros_like(inputs[batch][sequence])
-            targets[batch][sequence][:-1] = inputs[batch][sequence][1:]
-            targets[batch][sequence][-1] = inputs[batch][sequence][0]
+        temp_tuple[0][batch] = inputs[batch:num_batches*batch_size:num_batches].view(batch_size, sequence_length)
+        temp_tuple[1][batch] = targets[batch:num_batches*batch_size:num_batches].view(batch_size, sequence_length)
         if print_every and batch % print_every == 0:
             print("Preparing batch {}/{}".format(batch + 1, num_batches))
+
+    inputs, targets = temp_tuple
     return inputs, targets
 
 def one_hot_encode(idx, vocab_size):
