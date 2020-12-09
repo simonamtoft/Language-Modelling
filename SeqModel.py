@@ -34,7 +34,7 @@ class Seq(nn.Module):
 		self.dropout = nn.Dropout(self.dropout_rate)
 		self.fc = nn.Linear(self.hidden_dim, self.vocab_size)
 
-	def forward(self, x, lengths, h, c):
+	def forward(self, x, h, c):
 		# e: [batch, seq len, emb]
 		# o: [batch, seq len, hidden dim]
 		# (h, c): [n layers, batch, hidden dim]

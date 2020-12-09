@@ -11,10 +11,10 @@ LOAD_PRETRAINED = False
 
 # Data parameters
 SEQ_LEN = 256
-BATCH_SIZE = 32
+BATCH_SIZE = 128
 
 # Tokenizer parameters
-VOCAB_SIZE = 8192
+VOCAB_SIZE = 4096
 PADDING_SIZE = 256
 
 # Define paths
