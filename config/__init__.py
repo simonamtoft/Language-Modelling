@@ -1,21 +1,20 @@
 # Model parameters
 PARAM = {
-	'embed_dim' 	: 384,
-	'hidden_dim' 	: 384,
-	'n_layers' 		: 2,
-	'dropout' 		: 0.4
+	'embed_dim' 	: 1024,
+	'hidden_dim' 	: 1024,
+	'n_layers' 		: 3,
+	'dropout' 		: 0.1
 }
 
 PRINT_LOSS_EVERY_N_BATCH = 1000
 LOAD_PRETRAINED = False
 
 # Data parameters
-SEQ_LEN = 128
-BATCH_SIZE = 32
+SEQ_LEN = 64
+BATCH_SIZE = 64
 
 # Tokenizer parameters
 VOCAB_SIZE = 4096
-PADDING_SIZE = 256
 
 # Define paths
 PATH_DATA		= "./data/"

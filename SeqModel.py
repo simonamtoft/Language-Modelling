@@ -9,7 +9,7 @@ def simple_elementwise_apply(fn, packed_sequence):
     return torch.nn.utils.rnn.PackedSequence(fn(packed_sequence.data), packed_sequence.batch_sizes)
 
 class Seq(nn.Module):
-	def __init__(self, vocab_size, param, device):
+	def __init__(self, vocab_size, param, device, weight_tying = False):
 		super(Seq, self).__init__()
 		self.device = device
 		
@@ -33,6 +33,9 @@ class Seq(nn.Module):
 		)
 		self.dropout = nn.Dropout(self.dropout_rate)
 		self.fc = nn.Linear(self.hidden_dim, self.vocab_size)
+		if weight_tying:
+			assert self.hidden_dim == self.embed_dim
+			self.fc.weight = self.embedding.weight
 
 	def forward(self, x, h, c):
 		# e: [batch, seq len, emb]
