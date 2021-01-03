@@ -1,5 +1,10 @@
 import numpy as np
 import torch
+import config
+
+HIDDEN_DIM = config.PARAM['hidden_dim']
+N_LAYERS = config.PARAM['n_layers']
+
 
 def prep_batches(dataset, batch_size, sequence_length, print_every = None):
     num_batches = (len(dataset)-1) // sequence_length // batch_size
@@ -19,22 +24,3 @@ def prep_batches(dataset, batch_size, sequence_length, print_every = None):
 
     inputs, targets = temp_tuple
     return inputs, targets
-
-def one_hot_encode(idx, vocab_size):
-	one_hot = np.zeros(vocab_size)
-	one_hot[idx] = 1
-	return one_hot
-
-
-def one_hot_encode_seq(sequence, vocab_size):
-	encoding = np.array([
-		one_hot_encode(token, vocab_size) for token in sequence
-	])
-	return encoding
-
-
-def one_hot_encode_batch(batch, vocab_size):
-	encoding = torch.tensor([
-		one_hot_encode_seq(sequence, vocab_size) for sequence in batch
-	])
-	return encoding
